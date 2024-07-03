@@ -4,6 +4,10 @@ public class Channels {
 
     private String channelName;
 
+    public Channels(String channelName) {
+        this.channelName = channelName;
+    }
+
     public String getChannelName() {
         return channelName;
     }
