@@ -20,7 +20,7 @@ public class LiveChannelsViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new FragmentClaro();
             case 1:
-                return new FragmentClaro();
+                return new FragmentFubo();
             case 2:
                 return new FragmentFubo();
             default:
