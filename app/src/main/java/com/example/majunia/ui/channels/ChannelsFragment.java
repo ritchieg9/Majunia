@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.majunia.R;
 import com.example.majunia.databinding.FragmentChannelsBinding;
-import com.example.majunia.ui.adapters.LiveChannelsViewPagerAdapter;
+import com.example.majunia.ui.adapters.ChannelsTabAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -33,7 +33,7 @@ public class ChannelsFragment extends Fragment {
 
         viewPager2 = root.findViewById(R.id.viewPager2);
         tabLayout = root.findViewById(R.id.tab_layout);
-        viewPager2.setAdapter(new LiveChannelsViewPagerAdapter(getActivity()));
+        viewPager2.setAdapter(new ChannelsTabAdapter(getActivity()));
 
         new TabLayoutMediator(tabLayout, viewPager2,
                 (tab, position) -> tab.setText((places.get(position)))

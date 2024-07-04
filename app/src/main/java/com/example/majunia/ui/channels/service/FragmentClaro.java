@@ -13,13 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.majunia.R;
+import com.example.majunia.api.ApiService;
 import com.example.majunia.databinding.FragmentTvClaroBinding;
-import com.example.majunia.ui.Majunia;
+import com.example.majunia.api.Majunia;
 import com.example.majunia.ui.adapters.ItemsAdapter;
-import com.example.majunia.ui.channelCallback;
+import com.example.majunia.api.channelCallback;
 import com.example.majunia.ui.model.Channels;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,16 +29,20 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentClaro extends Fragment implements channelCallback {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class FragmentClaro extends Fragment implements channelCallback{
 
     private FragmentTvClaroBinding binding;
     private itemsListener listener;
     RecyclerView courseRV;
     ItemsAdapter itemsAdapter;
 
-    public FragmentClaro() {
-
-    }
+    public FragmentClaro() {}
 
     public interface itemsListener {
         void onInputASent(String input, String channelName);
@@ -48,25 +54,59 @@ public class FragmentClaro extends Fragment implements channelCallback {
 
     private void fetchChannels(String jsonURL, String playlistName) {
 
-        @SuppressLint("NotifyDataSetChanged") JsonArrayRequest request = new JsonArrayRequest(jsonURL,
-                response -> {
-                    if (response == null) {
-                        return;
-                    }
+//        @SuppressLint("NotifyDataSetChanged") JsonArrayRequest request = new JsonArrayRequest(jsonURL,
+//                response -> {
+//                    if (response == null) {
+//                        return;
+//                    }
+//
+//                    List<Channels> items = new Gson().fromJson(response.toString(), new TypeToken<List<Channels>>() {
+//                    }.getType());
+//
+//                    ArrayList<Channels> channelsArrayList = new ArrayList<Channels>();
+//                    channelsArrayList.addAll(items);
+//                    itemsAdapter = new ItemsAdapter(requireContext(), channelsArrayList);
+//                    courseRV.setAdapter(itemsAdapter);
+//
+//                    // refreshing recycler view
+//                    itemsAdapter.notifyDataSetChanged();
+//                }, error -> {}
+//        );
+//        Majunia.getInstance().addToRequestQueue(request);
 
-                    List<Channels> items = new Gson().fromJson(response.toString(), new TypeToken<List<Channels>>() {
-                    }.getType());
 
-                    ArrayList<Channels> courseModelArrayList = new ArrayList<Channels>();
-                    courseModelArrayList.addAll(items);
-                    itemsAdapter = new ItemsAdapter(requireContext(), courseModelArrayList);
-                    courseRV.setAdapter(itemsAdapter);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://147.135.114.195/playlist/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<ArrayList<Channels>> call = apiService.getClaroChannels();
+        call.enqueue(new Callback<ArrayList<Channels>>() {
 
-                    // refreshing recycler view
-                    itemsAdapter.notifyDataSetChanged();
-                }, error -> {}
-        );
-        Majunia.getInstance().addToRequestQueue(request);
+            @Override
+            public void onResponse(Call<ArrayList<Channels>> call, Response<ArrayList<Channels>> response) {
+
+                if (response.body() == null) {
+                    Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ArrayList<Channels> channelsArrayList = new ArrayList<>();
+                channelsArrayList.addAll(response.body());
+                itemsAdapter = new ItemsAdapter(requireContext(), channelsArrayList);
+                courseRV.setAdapter(itemsAdapter);
+
+                // refreshing recycler view
+                itemsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Channels>> call, Throwable t) {
+                Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
 
     @Override
@@ -79,11 +119,11 @@ public class FragmentClaro extends Fragment implements channelCallback {
         courseRV = root.findViewById(R.id.itemsRecycleView);
 
         // Here, we have created new array list and added data to it
-        ArrayList<Channels> courseModelArrayList = new ArrayList<Channels>();
-        courseModelArrayList.add(new Channels("Gatitos"));
+        ArrayList<Channels> channelsArrayList = new ArrayList<Channels>();
+        // channelsArrayList.add(new Channels("Gatitos"));
 
         // we are initializing our adapter class and passing our arraylist to it.
-        itemsAdapter = new ItemsAdapter(requireContext(), courseModelArrayList);
+        itemsAdapter = new ItemsAdapter(requireContext(), channelsArrayList);
         // below line is for setting a layout manager for our recycler view.
         // here we are creating vertical list so we will provide orientation as vertical
         GridLayoutManager linearLayoutManager = new GridLayoutManager(requireContext(), 3);
@@ -92,7 +132,7 @@ public class FragmentClaro extends Fragment implements channelCallback {
         courseRV.setLayoutManager(linearLayoutManager);
         courseRV.setAdapter(itemsAdapter);
 
-        fetchChannels("http://147.135.114.195/playlist/playlist-claro-hls_kr-channels.json", "null");
+        fetchChannels("http://147.135.114.195/playlist/playlist-claro-hls_kr-channels.json", "hola");
 
         return root;
     }

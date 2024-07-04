@@ -1,4 +1,4 @@
-package com.example.majunia.ui;
+package com.example.majunia.api;
 import android.app.Application;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
