@@ -1,6 +1,5 @@
 package com.example.majunia.ui;
 
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public interface channelCallback {

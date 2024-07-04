@@ -1,5 +1,6 @@
 package com.example.majunia.ui.channels.service;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,18 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.example.majunia.R;
 import com.example.majunia.databinding.FragmentTvClaroBinding;
 import com.example.majunia.ui.Majunia;
 import com.example.majunia.ui.adapters.ItemsAdapter;
 import com.example.majunia.ui.channelCallback;
 import com.example.majunia.ui.model.Channels;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +41,14 @@ public class FragmentClaro extends Fragment implements channelCallback {
     public interface itemsListener {
         void onInputASent(String input, String channelName);
     }
+
     public static FragmentClaro newInstance() {
         return new FragmentClaro();
     }
 
     private void fetchChannels(String jsonURL, String playlistName) {
 
-        JsonArrayRequest request = new JsonArrayRequest(jsonURL,
+        @SuppressLint("NotifyDataSetChanged") JsonArrayRequest request = new JsonArrayRequest(jsonURL,
                 response -> {
                     if (response == null) {
                         return;
@@ -85,7 +86,7 @@ public class FragmentClaro extends Fragment implements channelCallback {
         itemsAdapter = new ItemsAdapter(requireContext(), courseModelArrayList);
         // below line is for setting a layout manager for our recycler view.
         // here we are creating vertical list so we will provide orientation as vertical
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(requireContext(), 3 );
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(requireContext(), 3);
 
         // in below two lines we are setting layoutmanager and adapter to our recycler view.
         courseRV.setLayoutManager(linearLayoutManager);
