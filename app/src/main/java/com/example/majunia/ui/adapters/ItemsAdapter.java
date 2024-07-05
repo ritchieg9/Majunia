@@ -18,24 +18,34 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
     private final Context context;
     private final ArrayList<Channels> itemsModelArrayList;
+    private ItemsAdapter.itemsListener listener;
+
+    public interface itemsListener {
+        void onInputASent(String input, String channelName);
+    }
 
     // Constructor
     public ItemsAdapter(Context context, ArrayList<Channels> itemsModelArrayList) {
         this.context = context;
+        this.listener = (itemsListener) context;
         this.itemsModelArrayList = itemsModelArrayList;
     }
 
     @NonNull
     @Override
     public ItemsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_card_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_card_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Channels model = itemsModelArrayList.get(position);
-        holder.channelName.setText(model.getChannelName());
+        Channels channel = itemsModelArrayList.get(position);
+        holder.channelName.setText(channel.getChannelName());
+
+        holder.itemView.setOnClickListener(view -> {
+            listener.onInputASent(String.valueOf(position), channel.getChannelName());
+        });
     }
 
     @Override

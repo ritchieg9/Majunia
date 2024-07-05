@@ -3,7 +3,9 @@ package com.example.majunia;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
+import com.example.majunia.ui.adapters.ItemsAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -16,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.majunia.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemsAdapter.itemsListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -70,5 +72,10 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onInputASent(String input, String channelName) {
+        Toast.makeText(getBaseContext(), channelName, Toast.LENGTH_SHORT).show();
     }
 }
