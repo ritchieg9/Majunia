@@ -6,9 +6,17 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.majunia.ui.adapters.ItemsAdapter;
+import com.example.majunia.ui.fragments.MediaFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.OptIn;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.hls.HlsMediaSource;
+import androidx.media3.ui.PlayerView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -23,6 +31,12 @@ public class MainActivity extends AppCompatActivity implements ItemsAdapter.item
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
+    private ExoPlayer player;
+    private PlayerView playerView;
+
+    MediaFragment mediaFragment;
+
+    @OptIn(markerClass = UnstableApi.class)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +72,31 @@ public class MainActivity extends AppCompatActivity implements ItemsAdapter.item
                 findViewById(R.id.video_area).setVisibility(View.VISIBLE);
             }
         });
+
+        playerView = findViewById(R.id.playerView);
+
+        // Initialize ExoPlayer
+        player = new ExoPlayer.Builder(this).build();playerView.setPlayer(player);
+
+        // Prepare the HLS media source
+        HlsMediaSource hlsMediaSource = new HlsMediaSource.Factory(new DefaultHttpDataSource.Factory())
+                .createMediaSource(MediaItem.fromUri("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"));
+
+        // Set the media source and prepare the player
+        player.setMediaSource(hlsMediaSource);
+        player.prepare();
+
+        // Start playback
+        player.play();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Release the player when the activity is destroyed
+        if (player != null) {
+            player.release();
+        }
     }
 
     @Override

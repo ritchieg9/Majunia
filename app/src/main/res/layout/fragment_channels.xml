@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.channels.ChannelsFragment">
+    tools:context=".ui.fragments.channels.ChannelsFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"

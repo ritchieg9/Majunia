@@ -1,4 +1,4 @@
-package com.example.majunia.ui.channels.service;
+package com.example.majunia.ui.fragments.channels.service;
 
 import android.os.Bundle;
 

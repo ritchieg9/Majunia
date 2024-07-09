@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.majunia.ui.channels.service.FragmentClaro;
-import com.example.majunia.ui.channels.service.FragmentFubo;
+import com.example.majunia.ui.fragments.channels.service.FragmentClaro;
+import com.example.majunia.ui.fragments.channels.service.FragmentFubo;
 
 public class ChannelsTabAdapter extends FragmentStateAdapter {
     public ChannelsTabAdapter(FragmentActivity activity) {

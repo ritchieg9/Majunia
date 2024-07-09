@@ -1,4 +1,4 @@
-package com.example.majunia.ui.channels;
+package com.example.majunia.ui.fragments.channels;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
