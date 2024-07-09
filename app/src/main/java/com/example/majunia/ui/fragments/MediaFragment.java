@@ -2,13 +2,21 @@ package com.example.majunia.ui.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.OptIn;
 import androidx.fragment.app.Fragment;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.hls.HlsMediaSource;
+import androidx.media3.ui.PlayerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.majunia.R;
+import com.example.majunia.databinding.FragmentMediaBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,10 +29,13 @@ public class MediaFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private FragmentMediaBinding binding;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ExoPlayer player;
+    private PlayerView playerView;
 
     public MediaFragment() {
         // Required empty public constructor
@@ -57,10 +68,38 @@ public class MediaFragment extends Fragment {
         }
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_media, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+
+        binding = FragmentMediaBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        playerView = root.findViewById(R.id.playerView);
+
+        // Initialize ExoPlayer
+        player = new ExoPlayer.Builder(requireContext()).build();playerView.setPlayer(player);
+
+        // Prepare the HLS media source
+        HlsMediaSource hlsMediaSource = new HlsMediaSource.Factory(new DefaultHttpDataSource.Factory())
+                .createMediaSource(MediaItem.fromUri("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"));
+
+        // Set the media source and prepare the player
+        player.setMediaSource(hlsMediaSource);
+        player.prepare();
+
+        // Start playback
+        player.play();
+
+        return root;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Release the player when the activity is destroyed
+        if (player != null) {
+            player.release();
+        }
     }
 }
